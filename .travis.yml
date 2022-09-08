@@ -17,7 +17,7 @@ install:
   # - python3 -m pip install required driver (e.g. docker, shade, boto, apache-libcloud)
 
 before_script:
-  - cd JFrog-Cloud-Installers/Ansible/ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
+  - cd ../JFrog-Cloud-Installers/Ansible/ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
 
 script:
   - molecule test
