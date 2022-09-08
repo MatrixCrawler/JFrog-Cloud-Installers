@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  connection: local
+  gather_facts: false
+
+  collection:
+    - jfrog.platform
+
+  tasks:
+    - name: "Include artifactory"
+      ansible.builtin.include_role:
+        name: "artifactory"

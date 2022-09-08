@@ -1,0 +1,23 @@
+---
+#sudo: required
+language: python
+services:
+  - docker
+
+env:
+  global:
+    - COLLECTION_NAMESPACE: jfrog
+    - COLLECTION_NAME: platform
+
+before_install:
+  - curl https://gist.githubusercontent.com/geerlingguy/ce883ad4aec6a5f1187ef93bd338511e/raw/36612d28981d92863f839c5aefe5b7dd7193d6c6/travis-ci-docker-upgrade.sh | sudo bash
+
+install:
+  - pip install molecule molecule-docker yamllint ansible-lint docker
+  # - python3 -m pip install required driver (e.g. docker, shade, boto, apache-libcloud)
+
+before_script:
+  - cd JFrog-Cloud-Installers/Ansible/ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
+
+script:
+  - molecule test
