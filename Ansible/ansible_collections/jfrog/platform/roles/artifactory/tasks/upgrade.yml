@@ -1,14 +1,16 @@
+---
+
 - name: Configure SELinux context
   include_tasks: shared/selinux_configure_context.yml
 
 - name: Check if artifactory tar already exists
-  become: yes
+  become: true
   stat:
     path: "{{ jfrog_home_directory }}/{{ artifactory_tar_file_name }}"
   register: artifactory_tar_check
 
 - name: Download artifactory for upgrade
-  become: yes
+  become: true
   get_url:
     url: "{{ artifactory_tar }}"
     timeout: "{{ artifactory_download_timeout }}"
@@ -19,7 +21,7 @@
   when: not artifactory_tar_check.stat.exists
 
 - name: Extract artifactory tar
-  become: yes
+  become: true
   unarchive:
     src: "{{ jfrog_home_directory }}/{{ artifactory_tar_file_name }}"
     dest: "{{ jfrog_home_directory }}"
@@ -33,44 +35,44 @@
   meta: flush_handlers
 
 - name: Ensure jfrog_home_directory exists
-  become: yes
+  become: true
   file:
     mode: 0755
     path: "{{ jfrog_home_directory }}"
     state: directory
 
 - name: Delete artifactory app directory
-  become: yes
+  become: true
   file:
     path: "{{ artifactory_home }}/app"
     state: absent
   when: download_artifactory.changed
 
 - name: Copy new app to artifactory app
-  become: yes
+  become: true
   command: "cp -r {{ artifactory_untar_home }}/app/. {{ artifactory_home }}/app"
   when: download_artifactory.changed
   notify: restart artifactory
 
 - name: Configure artifactory license(s)
-  become: yes
+  become: true
   template:
     src: artifactory.cluster.license.j2
     dest: "{{ artifactory_home }}/var/etc/artifactory/artifactory.cluster.license"
     mode: 0644
   when:
-   - artifactory_licenses is defined
-   - artifactory_licenses | length > 0
+    - artifactory_licenses is defined
+    - artifactory_licenses | length > 0
   notify: restart artifactory
 
 - name: Check if jdbc driver exists
-  become: yes
+  become: true
   stat:
     path: "{{ artifactory_home }}/app/artifactory/tomcat/lib/jf_postgresql-{{ postgres_driver_version }}.jar"
   register: database_driver
 
 - name: Download jdbc driver
-  become: yes
+  become: true
   get_url:
     url: "{{ postgres_driver_download_url }}"
     dest: "{{ artifactory_home }}/var/bootstrap/artifactory/tomcat/lib"
@@ -82,7 +84,7 @@
   notify: restart artifactory
 
 - name: Configure installer info
-  become: yes
+  become: true
   template:
     src: installer-info.json.j2
     dest: "{{ artifactory_home }}/var/etc/artifactory/info/installer-info.json"
@@ -90,7 +92,7 @@
   notify: restart artifactory
 
 - name: Configure binary store
-  become: yes
+  become: true
   template:
     src: binarystore.xml.j2
     dest: "{{ artifactory_home }}/var/etc/artifactory/binarystore.xml"
@@ -101,13 +103,13 @@
   notify: restart artifactory
 
 - name: Check if system.yaml exists
-  become: yes
+  become: true
   stat:
     path: "{{ artifactory_home }}/var/etc/system.yaml"
   register: systemyaml
 
 - name: Configure system.yaml
-  become: yes
+  become: true
   template:
     src: "{{ artifactory_system_yaml_template }}"
     dest: "{{ artifactory_home }}/var/etc/system.yaml"

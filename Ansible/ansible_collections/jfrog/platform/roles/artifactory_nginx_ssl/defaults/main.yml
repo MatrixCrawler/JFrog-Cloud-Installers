@@ -1,3 +1,5 @@
+---
+
 # defaults file for artifactory_nginx_ssl
 
 ## For production deployments,You SHOULD change it.

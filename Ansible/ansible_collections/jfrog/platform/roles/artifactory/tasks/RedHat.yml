@@ -1,7 +1,9 @@
+---
+
 - name: Install prerequisite packages
-  become: yes
+  become: true
   yum:
-    name: ['net-tools', '{{ selinux_policy_package }}']
+    name: [ 'net-tools', '{{ selinux_policy_package }}' ]
     state: present
 
 - name: Configure SELinux context

@@ -1,11 +1,13 @@
+---
+
 - name: Check if distribution tar already exists
-  become: yes
+  become: true
   stat:
     path: "{{ jfrog_home_directory }}/{{ distribution_tar_file_name }}"
   register: distribution_tar_check
 
 - name: Download distribution for upgrade
-  become: yes
+  become: true
   get_url:
     url: "{{ distribution_tar }}"
     timeout: "{{ distribution_download_timeout }}"
@@ -16,7 +18,7 @@
   when: not distribution_tar_check.stat.exists
 
 - name: Extract distribution tar
-  become: yes
+  become: true
   unarchive:
     src: "{{ jfrog_home_directory }}/{{ distribution_tar_file_name }}"
     dest: "{{ jfrog_home_directory }}"
@@ -30,25 +32,25 @@
   meta: flush_handlers
 
 - name: Delete distribution app
-  become: yes
+  become: true
   file:
     path: "{{ distribution_home }}/app"
     state: absent
   when: download_distribution.changed
 
 - name: Copy new app to distribution app
-  become: yes
+  become: true
   command: "cp -r {{ distribution_untar_home }}/app/. {{ distribution_home }}/app"
   when: download_distribution.changed
 
 - name: Check if system.yaml exists
-  become: yes
+  become: true
   stat:
     path: "{{ distribution_home }}/var/etc/system.yaml"
   register: systemyaml
 
 - name: Configure system.yaml
-  become: yes
+  become: true
   template:
     src: "{{ distribution_system_yaml_template }}"
     dest: "{{ distribution_home }}/var/etc/system.yaml"
@@ -60,7 +62,7 @@
   notify: restart distribution
 
 - name: Check if install.sh wrapper script exist
-  become: yes
+  become: true
   stat:
     path: "{{ distribution_install_script_path }}/install.sh"
   register: install_wrapper_script
@@ -84,7 +86,7 @@
     - download_distribution.changed
 
 - name: Ensure redis config directory exists
-  become: yes
+  become: true
   file:
     path: "{{ distribution_home }}/var/etc/redis/"
     state: directory
@@ -93,7 +95,7 @@
     mode: 0644
 
 - name: Configure redis config
-  become: yes
+  become: true
   template:
     src: "redis.conf.j2"
     dest: "{{ distribution_home }}/var/etc/redis/redis.conf"
@@ -101,7 +103,7 @@
   notify: restart distribution
 
 - name: Configure installer info
-  become: yes
+  become: true
   template:
     src: installer-info.json.j2
     dest: "{{ distribution_home }}/var/etc/info/installer-info.json"
@@ -109,11 +111,11 @@
   notify: restart distribution
 
 - name: Update distribution permissions
-  become: yes
+  become: true
   file:
     path: "{{ distribution_home }}"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ distribution_user }}"
     group: "{{ distribution_group }}"
 

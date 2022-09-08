@@ -11,7 +11,7 @@ shared:
     password: "{{ insight_db_password }}"
   elasticsearch:
     unicastFile: {{ insight_es_conf_base }}/unicast_hosts.txt
-    clusterSetup: YES
+    clusterSetup: true
     password: {{ insight_es_password }}
     url: {{ insight_es_url }}
     username: {{ insight_es_user }}

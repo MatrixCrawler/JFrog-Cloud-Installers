@@ -1,3 +1,4 @@
+---
 - hosts: postgres_servers
   roles:
     - role: postgres

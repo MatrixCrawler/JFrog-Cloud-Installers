@@ -1,11 +1,12 @@
+---
 - name: Check if insight tar exists
-  become: yes
+  become: true
   stat:
     path: "{{ jfrog_home_directory }}/{{ insight_tar_file_name }}"
   register: insight_tar_check
 
 - name: Download insight for upgrade
-  become: yes
+  become: true
   get_url:
     url: "{{ insight_tar }}"
     timeout: "{{ insight_download_timeout }}"
@@ -16,7 +17,7 @@
   when: not insight_tar_check.stat.exists
 
 - name: Extract insight tar
-  become: yes
+  become: true
   unarchive:
     src: "{{ jfrog_home_directory }}/{{ insight_tar_file_name }}"
     dest: "{{ jfrog_home_directory }}"
@@ -30,7 +31,7 @@
   meta: flush_handlers
 
 - name: Delete current app folder
-  become: yes
+  become: true
   file:
     path: "{{ insight_home }}/app"
     state: absent
@@ -38,11 +39,11 @@
 
 - name: Copy new app to insight app
   command: "cp -r {{ insight_untar_home }}/app/. {{ insight_home }}/app"
-  become: yes
+  become: true
   when: download_insight.changed
 
 - name: Delete untar directory
-  become: yes
+  become: true
   file:
     path: "{{ insight_untar_home }}"
     state: absent
@@ -53,13 +54,13 @@
   when: download_insight.changed
 
 - name: Check if system.yaml exists
-  become: yes
+  become: true
   stat:
     path: "{{ insight_home }}/var/etc/system.yaml"
   register: systemyaml
 
 - name: Configure system.yaml
-  become: yes
+  become: true
   template:
     src: "{{ insight_system_yaml_template }}"
     dest: "{{ insight_home }}/var/etc/system.yaml"
@@ -73,7 +74,7 @@
   notify: restart insight
 
 - name: Check if install.sh wrapper script exist
-  become: yes
+  become: true
   stat:
     path: "{{ insight_install_script_path }}/install.sh"
   register: upgrade_wrapper_script
@@ -97,7 +98,7 @@
     - download_insight.changed
 
 - name: Configure installer info
-  become: yes
+  become: true
   template:
     src: installer-info.json.j2
     dest: "{{ insight_home }}/var/etc/info/installer-info.json"
@@ -105,11 +106,11 @@
   notify: restart insight
 
 - name: Update correct permissions
-  become: yes
+  become: true
   file:
     path: "{{ insight_home }}"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ insight_user }}"
     group: "{{ insight_group }}"
 

@@ -1,13 +1,13 @@
 ---
 # handlers file for distribution
 - name: restart distribution
-  become: yes
+  become: true
   systemd:
     name: "{{ distribution_daemon }}"
     state: restarted
 
 - name: stop distribution
-  become: yes
+  become: true
   systemd:
     name: "{{ distribution_daemon }}"
     state: stopped

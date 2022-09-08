@@ -1,3 +1,4 @@
+---
 # defaults file for artifactory
 
 # The version of artifactory to install
@@ -57,7 +58,7 @@ artifactory_gid: 1030
 # if this is an upgrade
 artifactory_upgrade_only: false
 
-#default username and password
+# default username and password
 artifactory_admin_username: admin
 artifactory_admin_password: password
 

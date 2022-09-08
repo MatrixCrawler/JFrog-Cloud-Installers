@@ -1,3 +1,5 @@
+---
+
 - name: Perform installation
   include_tasks: "install.yml"
   when:

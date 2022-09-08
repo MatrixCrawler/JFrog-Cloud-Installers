@@ -1,3 +1,5 @@
+---
+
 - name: Include distro specific variables
   include_vars: "{{ distro_vars_file }}"
   vars:
@@ -27,29 +29,29 @@
     - artifactory_nginx_ssl_enabled | bool
 
 - name: Ensure group artifactory exist
-  become: yes
+  become: true
   group:
     name: "{{ artifactory_group }}"
     state: present
 
 - name: Ensure user artifactory exist
-  become: yes
+  become: true
   user:
     name: "{{ artifactory_user }}"
     group: "{{ artifactory_group }}"
-    create_home: yes
+    create_home: true
     home: "{{ artifactory_home }}"
     shell: /bin/bash
     state: present
 
 - name: Check if artifactory tar already exists
-  become: yes
+  become: true
   stat:
     path: "{{ jfrog_home_directory }}/{{ artifactory_tar_file_name }}"
   register: artifactory_tar_check
 
 - name: Download artifactory
-  become: yes
+  become: true
   get_url:
     url: "{{ artifactory_tar }}"
     timeout: "{{ artifactory_download_timeout }}"
@@ -60,7 +62,7 @@
   when: not artifactory_tar_check.stat.exists
 
 - name: Extract artifactory tar
-  become: yes
+  become: true
   unarchive:
     src: "{{ jfrog_home_directory }}/{{ artifactory_tar_file_name }}"
     dest: "{{ jfrog_home_directory }}"
@@ -71,28 +73,28 @@
   when: (download_artifactory is succeeded) and (not ansible_check_mode)
 
 - name: Check if app directory exists
-  become: yes
+  become: true
   stat:
     path: "{{ artifactory_home }}/app"
   register: app_dir_check
 
 - name: Copy untar directory to artifactory home
-  become: yes
+  become: true
   copy:
     src: "{{ artifactory_untar_home }}/"
     dest: "{{ artifactory_home }}"
     owner: "{{ artifactory_user }}"
     group: "{{ artifactory_group }}"
     mode: 0755
-    remote_src: yes
+    remote_src: true
   when: not app_dir_check.stat.exists
 
 - name: Create required directories
-  become: yes
+  become: true
   file:
     path: "{{ item }}"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ artifactory_user }}"
     group: "{{ artifactory_group }}"
   loop:
@@ -102,13 +104,13 @@
     - "{{ artifactory_home }}/var/etc/artifactory/info/"
 
 - name: Check if system.yaml exists
-  become: yes
+  become: true
   stat:
     path: "{{ artifactory_home }}/var/etc/system.yaml"
   register: systemyaml
 
 - name: Configure system.yaml
-  become: yes
+  become: true
   template:
     src: "{{ artifactory_system_yaml_template }}"
     dest: "{{ artifactory_home }}/var/etc/system.yaml"
@@ -120,7 +122,7 @@
   notify: restart artifactory
 
 - name: Configure master key
-  become: yes
+  become: true
   copy:
     dest: "{{ artifactory_home }}/var/etc/security/master.key"
     content: "{{ master_key }}"
@@ -129,7 +131,7 @@
     mode: 0640
 
 - name: Configure installer info
-  become: yes
+  become: true
   template:
     src: installer-info.json.j2
     dest: "{{ artifactory_home }}/var/etc/artifactory/info/installer-info.json"
@@ -137,7 +139,7 @@
   notify: restart artifactory
 
 - name: Configure binary store
-  become: yes
+  become: true
   template:
     src: binarystore.xml.j2
     dest: "{{ artifactory_home }}/var/etc/artifactory/binarystore.xml"
@@ -148,32 +150,32 @@
   notify: restart artifactory
 
 - name: Configure artifactory license(s)
-  become: yes
+  become: true
   template:
     src: artifactory.cluster.license.j2
     dest: "{{ artifactory_home }}/var/etc/artifactory/artifactory.cluster.license"
     mode: 0644
   when:
-   - artifactory_licenses is defined
-   - artifactory_licenses | length > 0
+    - artifactory_licenses is defined
+    - artifactory_licenses | length > 0
   notify: restart artifactory
 
 - name: Check if included database driver is the correct version
-  become: yes
+  become: true
   stat:
     path: "{{ artifactory_home }}/app/artifactory/tomcat/lib/postgresql-{{ postgres_driver_version }}.jar"
   register: included_database_driver
 
 - name: Check if database driver exists
-  become: yes
+  become: true
   stat:
     path: "{{ artifactory_home }}/app/artifactory/tomcat/lib/jf_postgresql-{{ postgres_driver_version }}.jar"
-  when: 
+  when:
     - not included_database_driver.stat.exists
   register: database_driver
 
 - name: Download database driver
-  become: yes
+  become: true
   get_url:
     url: "{{ postgres_driver_download_url }}"
     dest: "{{ artifactory_home }}/var/bootstrap/artifactory/tomcat/lib"
@@ -189,7 +191,7 @@
   include_tasks: shared/selinux_restore_context.yml
 
 - name: Create artifactory service
-  become: yes
+  become: true
   command: "{{ artifactory_home }}/app/bin/installService.sh"
   args:
     creates: "{{ artifactory_service_file }}"

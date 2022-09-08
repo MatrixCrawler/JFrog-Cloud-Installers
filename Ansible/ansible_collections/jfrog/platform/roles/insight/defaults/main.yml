@@ -1,3 +1,5 @@
+---
+
 # defaults file for insight
 
 # The version of insight to install
@@ -18,7 +20,7 @@ insight_tar: https://releases.jfrog.io/artifactory/jfrog-insight/linux/{{ insigh
 # Timeout in seconds for URL request
 insight_download_timeout: 10
 
-#The insight install directory
+# The insight install directory
 insight_untar_home: "{{ jfrog_home_directory }}/jfrog-insight-{{ insight_version }}-linux"
 insight_home: "{{ jfrog_home_directory }}/insight"
 
@@ -27,7 +29,7 @@ insight_thirdparty_path: "{{ insight_home }}/app/third-party"
 insight_archive_service_cmd: "{{ insight_install_script_path }}/installService.sh"
 insight_service_file: /lib/systemd/system/insight.service
 
-#insight users and groups
+# insight users and groups
 insight_user: insight
 insight_group: insight
 

@@ -1,13 +1,13 @@
 ---
 # handlers file for distribution
 - name: restart artifactory
-  become: yes
+  become: true
   systemd:
     name: "{{ artifactory_daemon }}"
     state: restarted
 
 - name: stop artifactory
-  become: yes
+  become: true
   systemd:
     name: "{{ artifactory_daemon }}"
     state: stopped

@@ -1,5 +1,6 @@
+---
 - name: Install prerequisite packages
-  become: yes
+  become: true
   yum:
-    name: ["expect", "acl"]
+    name: [ "expect", "acl" ]
     state: present

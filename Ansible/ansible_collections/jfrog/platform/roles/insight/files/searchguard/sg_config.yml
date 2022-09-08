@@ -1,3 +1,4 @@
+---
 # This is the main Search Guard configuration file where authentication
 # and authorization is defined.
 #
@@ -59,28 +60,28 @@ sg_config:
     # Set filtered_alias_mode to 'disallow' to forbid more than 2 filtered aliases per index
     # Set filtered_alias_mode to 'warn' to allow more than 2 filtered aliases per index but warns about it (default)
     # Set filtered_alias_mode to 'nowarn' to allow more than 2 filtered aliases per index silently
-    #filtered_alias_mode: warn
-    #do_not_fail_on_forbidden: false
-    #kibana:
+    # filtered_alias_mode: warn
+    # do_not_fail_on_forbidden: false
+    # kibana:
     # Kibana multitenancy - NOT FREE FOR COMMERCIAL USE
     # In addition to the config options below you need to set do_not_fail_on_forbidden to true (see above).
     # Kibana needs to be configured for multi tenancy as well.
     # See https://docs.search-guard.com/latest/kibana-multi-tenancy for details
-    #multitenancy_enabled: true
-    #server_username: kibanaserver
-    #index: '.kibana'
+    # multitenancy_enabled: true
+    # server_username: kibanaserver
+    # index: '.kibana'
     http:
       anonymous_auth_enabled: true
       xff:
         enabled: false
-        internalProxies: '192\.168\.0\.10|192\.168\.0\.11' # regex pattern
-        #internalProxies: '.*' # trust all internal proxies, regex pattern
-        #remoteIpHeader:  'x-forwarded-for'
+        internalProxies: '192\.168\.0\.10|192\.168\.0\.11'     # regex pattern
+        # internalProxies: '.*' # trust all internal proxies, regex pattern
+        # remoteIpHeader:  'x-forwarded-for'
         ###### see https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html for regex help
         ###### more information about XFF https://en.wikipedia.org/wiki/X-Forwarded-For
         ###### and here https://tools.ietf.org/html/rfc7239
         ###### and https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve
-    auth_token_provider: # NOT FREE FOR COMMERCIAL USE
+    auth_token_provider:     # NOT FREE FOR COMMERCIAL USE
       # To enable using Search Guard auth tokens, you also need to enable the sg_issued_jwt_auth_domain below.
       enabled: false
       # JWTs produced by Search Guard are signed by default with a symmetric HMAC512 hash. For production systems,
@@ -92,7 +93,7 @@ sg_config:
       # JWTs produced by Search Guard are unencrypted by default. Set a key here to activate encryption using AES Key Wrap.
       # If you want ot use another signature algorithm, you can specify a complete JWK using the attriubute jwt_encryption_key.
       # Refer to the documentation for details.
-      #jwt_encryption_key_a256kw: "..."
+      # jwt_encryption_key_a256kw: "..."
       # Specify the maximum time period an auth token may be valid. Omit max_validity to have keys with unlimited lifetime.
       # Note that when creating auth tokens, users can specify an even shorter time period.
       max_validity: "1y"
@@ -104,7 +105,7 @@ sg_config:
         transport_enabled: false
         order: 6
         http_authenticator:
-          type: kerberos # NOT FREE FOR COMMERCIAL USE
+          type: kerberos     # NOT FREE FOR COMMERCIAL USE
           challenge: true
           config:
             # If true a lot of kerberos/security related debugging output will be logged to standard out
@@ -171,7 +172,7 @@ sg_config:
         http_authenticator:
           type: clientcert
           config:
-            username_attribute: cn #optional, if omitted DN becomes username
+            username_attribute: cn     # optional, if omitted DN becomes username
           challenge: false
         authentication_backend:
           type: noop
@@ -185,7 +186,7 @@ sg_config:
           challenge: false
         authentication_backend:
           # LDAP authentication backend (authenticate users against a LDAP or Active Directory)
-          type: ldap # NOT FREE FOR COMMERCIAL USE
+          type: ldap     # NOT FREE FOR COMMERCIAL USE
           config:
             # enable ldaps
             enable_ssl: false
@@ -212,7 +213,7 @@ sg_config:
         transport_enabled: false
         authorization_backend:
           # LDAP authorization backend (gather roles from a LDAP or Active Directory, you have to configure the above LDAP authentication backend settings too)
-          type: ldap # NOT FREE FOR COMMERCIAL USE
+          type: ldap     # NOT FREE FOR COMMERCIAL USE
           config:
             # enable ldaps
             enable_ssl: false
@@ -236,7 +237,7 @@ sg_config:
             userroleattribute: null
             # Roles as an attribute of the user entry
             userrolename: disabled
-            #userrolename: memberOf
+            # userrolename: memberOf
             # The attribute in a role entry containing the name of that role, Default is "name".
             # Can also be "dn" to use the full DN as rolename.
             rolename: cn
@@ -247,29 +248,28 @@ sg_config:
             # {0} is substituted with the username
             usersearch: '(uid={0})'
             # Skip users matching a user name, a wildcard or a regex pattern
-            #skip_users:
-            #  - 'cn=Michael Jackson,ou*people,o=TEST'
-            #  - '/\S*/'
+            # skip_users:
+            #   - 'cn=Michael Jackson,ou*people,o=TEST'
+            #   - '/\S*/'
       roles_from_another_ldap:
         description: "Authorize via another Active Directory"
         http_enabled: false
         transport_enabled: false
         authorization_backend:
-          type: ldap # NOT FREE FOR COMMERCIAL USE
-          #config goes here ...
-  #    auth_failure_listeners:
-  #      ip_rate_limiting:
-  #        type: ip
-  #        allowed_tries: 10
-  #        time_window_seconds: 3600
-  #        block_expiry_seconds: 600
-  #        max_blocked_clients: 100000
-  #        max_tracked_clients: 100000
-  #      internal_authentication_backend_limiting:
-  #        type: username
-  #        authentication_backend: intern
-  #        allowed_tries: 10
-  #        time_window_seconds: 3600
-  #        block_expiry_seconds: 600
-  #        max_blocked_clients: 100000
-  #        max_tracked_clients: 100000
+          type: ldap     # NOT FREE FOR COMMERCIAL USE
+#      auth_failure_listeners:
+#        ip_rate_limiting:
+#          type: ip
+#          allowed_tries: 10
+#          time_window_seconds: 3600
+#          block_expiry_seconds: 600
+#          max_blocked_clients: 100000
+#          max_tracked_clients: 100000
+#        internal_authentication_backend_limiting:
+#          type: username
+#          authentication_backend: intern
+#          allowed_tries: 10
+#          time_window_seconds: 3600
+#          block_expiry_seconds: 600
+#          max_blocked_clients: 100000
+#          max_tracked_clients: 100000

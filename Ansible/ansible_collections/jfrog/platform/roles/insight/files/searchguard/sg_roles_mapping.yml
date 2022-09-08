@@ -1,3 +1,4 @@
+---
 # In this file users, backendroles and hosts can be mapped to Search Guard roles.
 # Permissions for Search Guard roles are configured in sg_roles.yml
 _sg_meta:

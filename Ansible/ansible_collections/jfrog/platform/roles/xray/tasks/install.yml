@@ -1,30 +1,32 @@
+---
+
 - name: Install prerequisite packages
   include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Ensure group xray exist
-  become: yes
+  become: true
   group:
     name: "{{ xray_group }}"
     state: present
 
 - name: Ensure user xray exist
-  become: yes
+  become: true
   user:
     name: "{{ xray_user }}"
     group: "{{ xray_group }}"
-    create_home: yes
+    create_home: true
     home: "{{ xray_home }}"
     shell: /bin/bash
     state: present
 
 - name: Check if xray tar exists
-  become: yes
+  become: true
   stat:
     path: "{{ jfrog_home_directory }}/{{ xray_tar_file_name }}"
   register: xray_tar_check
 
 - name: Download xray
-  become: yes
+  become: true
   get_url:
     url: "{{ xray_tar }}"
     timeout: "{{ xray_download_timeout }}"
@@ -35,7 +37,7 @@
   when: not xray_tar_check.stat.exists
 
 - name: Extract xray tar
-  become: yes
+  become: true
   unarchive:
     src: "{{ jfrog_home_directory }}/{{ xray_tar_file_name }}"
     dest: "{{ jfrog_home_directory }}"
@@ -46,28 +48,28 @@
   when: download_xray is succeeded
 
 - name: Check if app directory exists
-  become: yes
+  become: true
   stat:
     path: "{{ xray_home }}/app"
   register: app_dir_check
 
 - name: Copy untar directory to xray home
-  become: yes
+  become: true
   copy:
     src: "{{ xray_untar_home }}/"
     dest: "{{ xray_home }}"
     owner: "{{ xray_user }}"
     group: "{{ xray_group }}"
     mode: 0755
-    remote_src: yes
+    remote_src: true
   when: not app_dir_check.stat.exists
 
 - name: Create required directories
-  become: yes
+  become: true
   file:
     path: "{{ item }}"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ xray_user }}"
     group: "{{ xray_group }}"
   loop:
@@ -76,7 +78,7 @@
     - "{{ xray_home }}/var/etc/security/"
 
 - name: Configure master key
-  become: yes
+  become: true
   copy:
     dest: "{{ xray_home }}/var/etc/security/master.key"
     content: "{{ master_key }}"
@@ -93,7 +95,7 @@
   when: ansible_os_family == 'Debian'
 
 - name: Check if install.sh wrapper script exist
-  become: yes
+  become: true
   stat:
     path: "{{ xray_install_script_path }}/install.sh"
   register: install_wrapper_script
@@ -114,7 +116,7 @@
   when: install_wrapper_script.stat.exists
 
 - name: Configure rabbitmq config
-  become: yes
+  become: true
   template:
     src: "rabbitmq.conf.j2"
     dest: "{{ xray_home }}/app/bin/rabbitmq/rabbitmq.conf"
@@ -122,7 +124,7 @@
   notify: restart xray
 
 - name: Configure installer info
-  become: yes
+  become: true
   template:
     src: installer-info.json.j2
     dest: "{{ xray_home }}/var/etc/info/installer-info.json"
@@ -130,13 +132,13 @@
   notify: restart xray
 
 - name: Check if system.yaml exists
-  become: yes
+  become: true
   stat:
     path: "{{ xray_home }}/var/etc/system.yaml"
   register: systemyaml
 
 - name: Configure system.yaml
-  become: yes
+  become: true
   template:
     src: "{{ xray_system_yaml_template }}"
     dest: "{{ xray_home }}/var/etc/system.yaml"
@@ -148,16 +150,16 @@
   notify: restart xray
 
 - name: Ensure permissions are correct
-  become: yes
+  become: true
   file:
     path: "{{ jfrog_home_directory }}"
     state: directory
     owner: "{{ xray_user }}"
     group: "{{ xray_group }}"
-    recurse: yes
+    recurse: true
 
 - name: Install xray as a service
-  become: yes
+  become: true
   command: "{{ xray_archive_service_cmd }}"
   args:
     chdir: "{{ xray_install_script_path }}"

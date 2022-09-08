@@ -1,6 +1,6 @@
 ---
 - name: Configure SELinux context
-  become: yes
+  become: true
   sefcontext:
     target: "{{ jfrog_home_directory }}/artifactory/app/bin(/.*)?"
     setype: bin_t
