@@ -13,3 +13,7 @@ rules:
 
 ignore: |
   .github/stale.yml
+
+yaml-files:
+  - 'Ansible/**/*.yaml'
+  - 'Ansible/**/*.yml'
