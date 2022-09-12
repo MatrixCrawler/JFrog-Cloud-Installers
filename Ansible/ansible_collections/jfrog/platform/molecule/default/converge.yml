@@ -10,6 +10,8 @@
   vars:
     artifactory_enabled: true
     artifactory_upgrade_only: false
+    master_key: ee69d96880726d3abf6b42b97d2ae589111ea95c2a8bd5876ec5cd9e8ee34f86
+    join_key: 83da88eaaa08dfed5b86888fcec85f19ace0c3ff8747bcefcec2c9769ad4043d
 
   tasks:
     - name: "Include artifactory"
