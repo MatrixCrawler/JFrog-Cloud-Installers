@@ -1,0 +1,22 @@
+---
+name: CI
+on:
+  push:
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'jfrog.platform'
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+      - name: Lint code.
+        run: |
+          yamllint .

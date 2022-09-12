@@ -5,10 +5,12 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Collect facts about system services
-      service_facts:
-      register: services_state
+    - name: Collect facts about artifactory service
+      ansible.builtin.systemd:
+        name: artifactory
+      register: service_state
 
     - name: Example assertion
       ansible.builtin.assert:
-        that: services_state["ansible_facts"]["services"]["artifactory.service"]["state"] is "running"
+        that:
+          - service_state.status.ActiveState is "active"
