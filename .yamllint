@@ -18,3 +18,4 @@ ignore: |
   CloudFormation/
   Openshift4/
   Terraform/
+  __.travis.yml

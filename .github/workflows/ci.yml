@@ -49,3 +49,4 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
+          YAMLLINT_CONFIG_FILE: /jfrog.platform/.yamllint
