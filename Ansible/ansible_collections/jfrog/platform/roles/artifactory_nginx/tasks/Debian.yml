@@ -1,5 +1,15 @@
 ---
 
+- name: Ensure gpg is installed
+  become: true
+  package:
+    name: gpg
+    state: present
+  register: install_gpg
+  retries: 5
+  delay: 60
+  until: install_gpg is succeeded
+
 - name: Import nginx signing key
   become: true
   apt_key:
