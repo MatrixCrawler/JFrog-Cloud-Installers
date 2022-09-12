@@ -1,0 +1,16 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Collect facts about artifactory service
+      ansible.builtin.systemd:
+        name: artifactory
+      register: service_state
+
+    - name: Example assertion
+      ansible.builtin.assert:
+        that:
+          - service_state.status.ActiveState is "active"
