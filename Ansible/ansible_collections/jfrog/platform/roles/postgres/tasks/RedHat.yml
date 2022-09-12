@@ -34,38 +34,49 @@
     - LANG=en_us.UTF-8
     - LANGUAGE=en_us.UTF-8
 
-- name: Import PostgreSQL GPG public key
-  become: yes
-  rpm_key:
-    key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
-    state: present
-
-- name: Install PostgreSQL repository
-  become: yes
-  yum:
-    name: "{{ base }}/reporpms/EL-{{ version }}-x86_64/{{ repo_file_name }}"
-    state: present
-  vars:
-    base: https://download.postgresql.org/pub/repos/yum
-    version: "{{ ansible_distribution_major_version if ansible_distribution != 'Amazon' else '7' }}"
-    repo_file_name: pgdg-redhat-repo-latest.noarch.rpm
-
-- name: Disable PostgreSQL module
-  become: yes
-  copy:
-    dest: /etc/dnf/modules.d/postgresql.module
-    owner: root
-    group: root
-    mode: 0644
-    content: |
-      [postgresql]
-      name=postgresql
-      stream=
-      profiles=
-      state=disabled
+- name: Block for installing in Amazonlinux2
   when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version | int == 8
+    ansible_distribution is 'Amazon'
+  block:
+    - name: "Activate Postgres Repository for Package Version {{ postgres_server_pkg_version }}"
+      ansible.builtin.command: "amazon-linux-extras install -y postgresql{{ postgres_server_pkg_version }}"
+
+- name: Block for installing in non Amazonlinux2
+  when:
+    ansible_distribution is not 'Amazon'
+  block:
+    - name: Import PostgreSQL GPG public key
+      become: yes
+      rpm_key:
+        key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+        state: present
+
+    - name: Install PostgreSQL repository
+      become: yes
+      yum:
+        name: "{{ base }}/reporpms/EL-{{ version }}-x86_64/{{ repo_file_name }}"
+        state: present
+      vars:
+        base: https://download.postgresql.org/pub/repos/yum
+        version: "{{ ansible_distribution_major_version if ansible_distribution != 'Amazon' else '7' }}"
+        repo_file_name: pgdg-redhat-repo-latest.noarch.rpm
+
+    - name: Disable PostgreSQL module
+      become: yes
+      copy:
+        dest: /etc/dnf/modules.d/postgresql.module
+        owner: root
+        group: root
+        mode: 0644
+        content: |
+          [postgresql]
+          name=postgresql
+          stream=
+          profiles=
+          state=disabled
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version | int == 8
 
 - name: Install PostgreSQL packages
   become: yes
