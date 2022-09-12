@@ -8,13 +8,11 @@ rules:
   brackets:
     max-spaces-inside: 1
     level: error
-  line-length:
-    max: 200
-    level: warning
+  line-length: disable
   truthy: disable
 
 ignore: |
-  .github/stale.yml
+  .github/
   Amazon/
   AzureResourceManager/
   CloudFormation/
