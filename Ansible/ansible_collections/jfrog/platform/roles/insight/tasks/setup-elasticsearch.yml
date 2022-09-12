@@ -165,7 +165,7 @@
   when: start_elasticsearch.changed
 
 - name: Check if elasticsearch is running
-  wait_for: 
+  wait_for:
     host: localhost
     port: "{{ insight_es_transport_port }}"
     delay: 5
