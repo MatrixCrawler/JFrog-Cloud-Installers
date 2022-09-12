@@ -4,13 +4,10 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
 platforms:
-  - name: ubuntu-xenial
-    image: ubuntu:xenial
+  - name: instance
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
     privileged: true
     pre_build_image: true
     volumes:
@@ -19,18 +16,19 @@ platforms:
 provisioner:
   name: ansible
   log: true
-
-scenario:
-  test_sequence:
-    - lint
-    - destroy
-    - dependency
-    - syntax
-    - create
-    - prepare
-    - converge
-    - side_effect
-    - verify
-    - destroy
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+#scenario:
+#  test_sequence:
+#    - lint
+#    - destroy
+#    - dependency
+#    - syntax
+#    - create
+#    - prepare
+#    - converge
+#    - side_effect
+#    - verify
+#    - destroy
 verifier:
   name: ansible
