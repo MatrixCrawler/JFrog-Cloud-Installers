@@ -41,6 +41,14 @@
     - name: "Activate Postgres Repository for Package Version {{ postgres_server_pkg_version }}"
       ansible.builtin.command: "amazon-linux-extras install -y postgresql{{ postgres_server_pkg_version }}"
 
+    - name: Install PostgreSQL packages
+      become: yes
+      ansible.builtin.yum:
+        name:
+          - postgresql-server
+          - postgresql-contrib
+        state: present
+
 - name: Block for installing in non Amazonlinux2
   when:
     - ansible_distribution != 'Amazon'
@@ -78,10 +86,10 @@
         - ansible_os_family == 'RedHat'
         - ansible_distribution_major_version | int == 8
 
-- name: Install PostgreSQL packages
-  become: yes
-  yum:
-    name:
-      - postgresql{{ postgres_server_pkg_version }}-server
-      - postgresql{{ postgres_server_pkg_version }}-contrib
-    state: present
+    - name: Install PostgreSQL packages
+      become: yes
+      yum:
+        name:
+          - postgresql{{ postgres_server_pkg_version }}-server
+          - postgresql{{ postgres_server_pkg_version }}-contrib
+        state: present
