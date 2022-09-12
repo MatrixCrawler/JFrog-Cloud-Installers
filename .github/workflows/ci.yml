@@ -2,6 +2,9 @@
 name: CI
 on:
   push:
+defaults:
+  run:
+    working-directory: 'jfrog.platform'
 jobs:
   lint:
     name: Lint
@@ -20,3 +23,29 @@ jobs:
       - name: Lint code.
         run: |
           yamllint .
+#  molecule:
+#    name: Molecule
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        distro:
+#          - ubuntu1804
+#          - ubuntu2004
+#          - ubuntu2204
+#    steps:
+#      - name: Checkout codebase.
+#        uses: actions/checkout@v2
+#        with:
+#          path: 'jfrog.platform'
+#      - name: Set up Python 3.
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.x'
+#      - name: Install test dependencies.
+#        run: pip3 install ansible molecule[docker] docker
+#      - name: Run molecule tests.
+#        run: molecule test
+#        env:
+#          PY_COLORS: '1'
+#          ANSIBLE_FORCE_COLOR: '1'
+#          MOLECULE_DISTRO: ${{ matrix.distro }}

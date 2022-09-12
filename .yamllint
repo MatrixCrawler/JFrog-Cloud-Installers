@@ -8,12 +8,15 @@ rules:
   brackets:
     max-spaces-inside: 1
     level: error
-  line-length: disable
+  line-length:
+    max: 200
+    level: warning
   truthy: disable
 
 ignore: |
   .github/stale.yml
-
-yaml-files:
-  - 'Ansible/**/*.yaml'
-  - 'Ansible/**/*.yml'
+  Amazon/
+  AzureResourceManager/
+  CloudFormation/
+  Openshift4/
+  Terraform/
