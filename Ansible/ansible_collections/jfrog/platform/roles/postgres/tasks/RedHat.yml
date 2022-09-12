@@ -37,14 +37,14 @@
 - name: Block for installing in Amazonlinux2
   when:
     - ansible_distribution == 'Amazon'
-  ansible.builtin.block:
+  block:
     - name: "Activate Postgres Repository for Package Version {{ postgres_server_pkg_version }}"
       ansible.builtin.command: "amazon-linux-extras install -y postgresql{{ postgres_server_pkg_version }}"
 
 - name: Block for installing in non Amazonlinux2
   when:
     - ansible_distribution != 'Amazon'
-  ansible.builtin.block:
+  block:
     - name: Import PostgreSQL GPG public key
       become: yes
       rpm_key:
