@@ -59,6 +59,14 @@
   retries: 3
   when: not artifactory_tar_check.stat.exists
 
+- name: Make sure that tar is installed
+  ansible.builtin.package:
+    name: tar
+    state: present
+  register: install_tar
+  until: install_tar is succeeded
+  retries: 3
+
 - name: Extract artifactory tar
   become: yes
   unarchive:
