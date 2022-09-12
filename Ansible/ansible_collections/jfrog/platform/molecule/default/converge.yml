@@ -7,13 +7,35 @@
   collections:
     - jfrog.platform
 
-  vars:
-    artifactory_enabled: true
-    artifactory_upgrade_only: false
-    master_key: ee69d96880726d3abf6b42b97d2ae589111ea95c2a8bd5876ec5cd9e8ee34f86
-    join_key: 83da88eaaa08dfed5b86888fcec85f19ace0c3ff8747bcefcec2c9769ad4043d
 
   tasks:
-    - name: "Include artifactory"
+    - name: "Include Postgres"
+      ansible.builtin.include_role:
+        name: "postgres"
+      vars:
+        postgres_enabled: true
+        # Distribution DB details
+        distribution_db_type: postgresql
+        distribution_db_driver: org.postgresql.Driver
+        distribution_db_name: distribution
+        distribution_db_user: distribution
+        distribution_db_password: password
+        distribution_db_url: >-
+          jdbc:postgresql://localhost:5432/{{ distribution_db_name }}?sslmode=disable
+
+
+    - name: "Include Artifactory"
       ansible.builtin.include_role:
         name: "artifactory"
+      vars:
+        artifactory_enabled: true
+        artifactory_upgrade_only: false
+        master_key: ee69d96880726d3abf6b42b97d2ae589111ea95c2a8bd5876ec5cd9e8ee34f86
+        join_key: 83da88eaaa08dfed5b86888fcec85f19ace0c3ff8747bcefcec2c9769ad4043d
+        artifactory_db_type: postgresql
+        artifactory_db_driver: org.postgresql.Driver
+        artifactory_db_name: artifactory
+        artifactory_db_user: artifactory
+        artifactory_db_password: password
+        artifactory_db_url: >-
+          jdbc:postgresql://localhost:5432/{{ artifactory_db_name }}
